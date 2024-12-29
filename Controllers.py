@@ -112,6 +112,37 @@ def delete_saving_account(account_id):
     saving_account_dao.delete_account(account_id)
     return redirect(url_for('get_all_saving_accounts'))  # Redirection vers la liste des comptes 
 
+@app.route('/transactions_saving_account', methods=['POST'])
+def transactions_saving_account():
+    transaction_type = request.form['transaction_type']
+
+    if transaction_type == 'deposit':
+        account_id = int(request.form['account_id'])
+        amount = float(request.form['amount'])
+        saving_account_dao.deposit(account_id,amount)
+        return redirect(url_for('get_all_saving_accounts'))
+    
+    if transaction_type == 'withdraw':
+        account_id = int(request.form['account_id'])
+        amount = float(request.form['amount'])
+        saving_account_dao.withdraw(account_id,amount)
+        return redirect(url_for('get_all_saving_accounts'))
+    
+    if transaction_type == 'transfer':
+        account_id = int(request.form['account_id'])
+        amount = float(request.form['amount'])
+        recipient_account = float(request.form['recipient_account'])
+        saving_account_dao.transfer(account_id,recipient_account,amount)
+        return redirect(url_for('get_all_saving_accounts'))
+    
+    if transaction_type == 'add_interest':
+        account_id = int(request.form['account_id'])
+        saving_account_dao.add_periodic_interest(account_id)
+        return redirect(url_for('get_all_saving_accounts'))
+    
+
+    
+
 
 
 @app.route('/create_checking_account', methods=['POST'])
@@ -198,5 +229,5 @@ def transactions_historique():
 
 if __name__ == "__main__":
     app.run(debug=True,host='0.0.0.0')  #on peut specifier le port comme ceci : app.run(port=8000)
-                                        #debug=True : pour que le serveur se recompile automatiquement autement dit lancer le serveur en mode development
+                                        #debug=True : pour que le serveur se recompile automatiquement autrement dit lancer le serveur en mode development
     

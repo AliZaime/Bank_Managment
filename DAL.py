@@ -11,8 +11,8 @@ class Database:
             try:
                 Database.cnx = my.connect(
                     user='root',
-                    password='2282003Zazaime',
-                    host='127.0.0.1',
+                    password='',
+                    host='localhost',
                     port='3306',
                     database='db_bank'
                 )
@@ -180,14 +180,16 @@ class TransactionDao:
     def create_transaction(self, account_id: int, account_type: str, transaction_type: str, amount: float):
         """Créer une transaction."""
         query = """
-                INSERT INTO transaction (account_id, account_type, transaction_type, amount)
+                INSERT INTO transactions (account_id, account_type, transaction_type, amount)
                 VALUES (%s, %s, %s, %s)
                 """
         if self.cnx is not None:
             cursor = self.cnx.cursor()
             cursor.execute(query, (account_id, account_type, transaction_type, amount))
             self.cnx.commit()
-
+if __name__ == "__main__":
+    database:Database = Database()
+    database.get_connection()
             
         
             

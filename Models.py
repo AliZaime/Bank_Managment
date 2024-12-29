@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 import datetime
 from typing import Final
 from dataclasses import dataclass
+from decimal import Decimal
 
 class BankAccount(ABC):
     
@@ -10,7 +11,7 @@ class BankAccount(ABC):
         self.account_id = None
     
     def deposit(self, amount: float) -> float:
-        self.balance += amount
+        self.balance += Decimal(str(amount))
         return self.balance  # Retourner le nouveau solde après dépôt
     
     @abstractmethod
@@ -35,8 +36,8 @@ class SavingAccount(BankAccount):
             return None  
 
     def withdraw(self, amount: float) -> float:
-        if self.balance - amount >= SavingAccount.SAVING_AMOUNT:
-            self.balance -= amount
+        if self.balance - Decimal(str(amount)) >= SavingAccount.SAVING_AMOUNT:
+            self.balance -= Decimal(str(amount))
             return self.balance  # Retourner le solde restant après retrait
         available_amount = self.balance - SavingAccount.SAVING_AMOUNT
         self.balance = SavingAccount.SAVING_AMOUNT
@@ -44,7 +45,7 @@ class SavingAccount(BankAccount):
 
     def addPeriodicInterest(self) -> float:
         interest: float = self.balance * self.interestRate
-        self.balance += interest
+        self.balance += Decimal(str(interest))
         return self.balance  # Retourner le solde après ajout des intérêts
 
 
@@ -69,7 +70,7 @@ class CheckingAccount(BankAccount):
     
     def withdraw(self, amount: float) -> float:
         if self.balance + CheckingAccount.DRAFT_OVER - amount >= 0:
-            self.balance -= amount
+            self.balance -= Decimal(str(amount))
             return self.balance  # Retourner le solde restant après retrait
         available_amount = self.balance + CheckingAccount.DRAFT_OVER
         self.balance = -CheckingAccount.DRAFT_OVER
@@ -80,7 +81,7 @@ class CheckingAccount(BankAccount):
         fees: float = 0
         if self.transaction_count > CheckingAccount.FREE_TRANSACTIONS:
             fees = (self.transaction_count - CheckingAccount.FREE_TRANSACTIONS) * CheckingAccount.TRANSACTION_FEE
-            self.balance -= fees
+            self.balance -= Decimal(str(fees))
             self.transaction_count = 0
         return self.balance  # Retourner le solde après déduction des frais
       

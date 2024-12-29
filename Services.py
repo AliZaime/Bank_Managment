@@ -104,6 +104,53 @@ class SavingAccountService:
         )
         
         return new_balance
+    
+    def transfer(self, source_account_id: int, target_account_id: int, amount: float) -> float:
+        """Effectuer un transfert entre deux comptes d'épargne."""
+        
+        if amount <= 0:
+            raise ValueError("Le montant du transfert doit être supérieur à 0.")
+        
+        # Récupérer les comptes source et destinataire
+        source_account = self.dao.getSavingAccount(source_account_id)
+        target_account = self.dao.getSavingAccount(target_account_id)
+        
+        if not source_account:
+            raise ValueError("Compte source d'épargne introuvable.")
+        
+        if not target_account:
+            raise ValueError("Compte destinataire d'épargne introuvable.")
+        
+        # Vérifier que le solde du compte source est suffisant pour le transfert
+        if source_account.balance < amount:
+            raise ValueError("Le solde du compte source est insuffisant.")
+        
+        # Effectuer le retrait sur le compte source et le dépôt sur le compte destinataire
+        new_source_balance = source_account.withdraw(amount)
+        new_target_balance = target_account.deposit(amount)
+        
+        # Mettre à jour les soldes dans la base de données
+        self.dao.update_balance(source_account_id, new_source_balance)
+        self.dao.update_balance(target_account_id, new_target_balance)
+        
+        # Créer une transaction pour le compte source (retrait)
+        self.transaction_dao.create_transaction(
+            account_id=source_account_id,
+            account_type='Saving',
+            transaction_type='Withdraw',
+            amount=amount
+        )
+        
+        # Créer une transaction pour le compte destinataire (dépôt)
+        self.transaction_dao.create_transaction(
+            account_id=target_account_id,
+            account_type='Saving',
+            transaction_type='Deposit',
+            amount=amount
+        )
+        
+        return new_source_balance, new_target_balance
+
 
     def add_periodic_interest(self, account_id: int) -> float:
         """Ajouter l'intérêt périodique sur un compte d'épargne."""
