@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+                /* Réinitialisation des marges et padding */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Style pour le corps de la page */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            padding: 20px;
+        }
+
+        /* Style pour le conteneur de la navigation */
+        nav {
+            background-color: #333;
+            padding: 10px;
+            text-align: right;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            color: #f1f1f1;
+        }
+
+        /* Style pour le tableau */
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #333;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        td {
+            color: #555;
+        }
+
+    </style>
+</head>
+<body>
+    <div>
+        <nav>
+            <a href="/logout">logout</a>
+        </nav>
+    </div>
+    <table>
+        <tr>
+            <th>username</th>
+            <th>e-mail</th>
+            <th>password</th>
+            <th>profile</th>
+        </tr>
+        {% for user in users %}
+            <tr>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.password }}</td>
+                <td>{{ user.isadmin }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
