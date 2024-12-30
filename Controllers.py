@@ -112,6 +112,17 @@ def delete_saving_account(account_id):
     saving_account_dao.delete_account(account_id)
     return redirect(url_for('get_all_saving_accounts'))  # Redirection vers la liste des comptes 
 
+@app.route('/log_saving_account', methods=['POST'])
+def log_saving_account():
+    try:
+        account_id = int(request.form['account_id'])
+        accounts = saving_account_dao.log_account(account_id)
+        print(accounts)
+        return render_template('transactions_saving_log.html', transactions=accounts)
+    except ValueError:
+        return "Invalid account ID provided", 400
+
+
 @app.route('/transactions_saving_account', methods=['POST'])
 def transactions_saving_account():
     transaction_type = request.form['transaction_type']
@@ -131,7 +142,7 @@ def transactions_saving_account():
     if transaction_type == 'transfer':
         account_id = int(request.form['account_id'])
         amount = float(request.form['amount'])
-        recipient_account = float(request.form['recipient_account'])
+        recipient_account = int(request.form['recipient_account'])
         saving_account_dao.transfer(account_id,recipient_account,amount)
         return redirect(url_for('get_all_saving_accounts'))
     
@@ -139,6 +150,8 @@ def transactions_saving_account():
         account_id = int(request.form['account_id'])
         saving_account_dao.add_periodic_interest(account_id)
         return redirect(url_for('get_all_saving_accounts'))
+    
+    return "Invalid transaction type", 400
     
 
     
@@ -185,7 +198,48 @@ def edit_checking_account():
 @app.route('/delete_checking_account/<int:account_id>', methods=['POST'])
 def delete_checking_account(account_id):
     checking_account_dao.delete_account(account_id)
-    return redirect(url_for('get_all_checking_accounts'))  # Redirection vers la liste des comptes
+    return redirect(url_for('get_all_checking_accounts'))
+
+@app.route('/log_checking_account', methods=['POST'])
+def log_checking_account():
+    try:
+        account_id = int(request.form['account_id'])
+        accounts = checking_account_dao.log_account(account_id)
+        print(accounts)
+        return render_template('transactions_checking_log.html', transactions=accounts)
+    except ValueError:
+        return "Invalid account ID provided", 400
+
+
+@app.route('/transactions_checking_account', methods=['POST'])
+def transactions_checking_account():
+    transaction_type = request.form['transaction_type']
+
+    if transaction_type == 'deposit':
+        account_id = int(request.form['account_id'])
+        amount = float(request.form['amount'])
+        checking_account_dao.deposit(account_id,amount)
+        return redirect(url_for('get_all_checking_accounts'))
+    
+    if transaction_type == 'withdraw':
+        account_id = int(request.form['account_id'])
+        amount = float(request.form['amount'])
+        checking_account_dao.withdraw(account_id,amount)
+        return redirect(url_for('get_all_checking_accounts'))
+    
+    if transaction_type == 'transfer':
+        account_id = int(request.form['account_id'])
+        amount = float(request.form['amount'])
+        recipient_account = int(request.form['recipient_account'])
+        checking_account_dao.transfer(account_id,recipient_account,amount)
+        return redirect(url_for('get_all_checking_accounts'))
+    
+    if transaction_type == 'deduct_fee':
+        account_id = int(request.form['account_id'])
+        checking_account_dao.deduct_fees(account_id)
+        return redirect(url_for('get_all_checking_accounts'))
+    
+    return "Invalid transaction type", 400
 
 
 @app.route("/")
@@ -212,9 +266,13 @@ def saving_transactions():
 def checking_transactions():
     return render_template("transactions_checking.html")
 
-@app.route("/transactions/historique", methods=["GET", "POST"])
-def transactions_historique():
-    return render_template("transactions_log.html")
+@app.route("/transactions-saving/historique", methods=["GET", "POST"])
+def transactions_saving_historique():
+    return render_template("transactions_saving_log.html")
+
+@app.route("/transactions-checking/historique", methods=["GET", "POST"])
+def transactions_checking_historique():
+    return render_template("transactions_checking_log.html")
 
 
 
@@ -230,4 +288,3 @@ def transactions_historique():
 if __name__ == "__main__":
     app.run(debug=True,host='0.0.0.0')  #on peut specifier le port comme ceci : app.run(port=8000)
                                         #debug=True : pour que le serveur se recompile automatiquement autrement dit lancer le serveur en mode development
-    

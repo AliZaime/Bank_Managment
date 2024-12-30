@@ -108,7 +108,8 @@
         <h1>ESISA BANK</h1>
         <a href="/Home">Home</a>
         <a href="/accounts">Accounts</a>
-        <a href="/transactions">Transactions</a>
+        <a href="/transactions/checking">Transactions</a>
+        <a href="/transactions-checking/historique">Transactions Log</a>
         <a href="/logout">Log Out</a>
     </div>
 
@@ -118,7 +119,7 @@
 
         <!-- Search Form -->
         <div class="search-container">
-            <form method="GET" action="/transactions">
+            <form method="POST" action="/log_checking_account">
                 <input type="text" name="account_id" placeholder="Search by Account ID..." required>
                 <button type="submit">Search</button>
             </form>
@@ -128,7 +129,6 @@
         <table>
             <thead>
                 <tr>
-                    <th>Transaction ID</th>
                     <th>Account ID</th>
                     <th>Transaction Type</th>
                     <th>Amount</th>
@@ -138,11 +138,10 @@
             <tbody>
                 {% for transaction in transactions %}
                 <tr>
-                    <td>{{ transaction.transaction_id }}</td>
                     <td>{{ transaction.account_id }}</td>
                     <td>{{ transaction.transaction_type }}</td>
                     <td>{{ transaction.amount }}</td>
-                    <td>{{ transaction.date }}</td>
+                    <td>{{ transaction.transaction_date }}</td>
                 </tr>
                 {% endfor %}
             </tbody>

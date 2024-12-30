@@ -72,11 +72,10 @@ class SavingAccountDao:
         accounts: list[SavingAccount] = []
         query = "SELECT * FROM saving_accounts;"
         if self.cnx is not None:
-            cursor = self.cnx.cursor(dictionary=True)
+            cursor = self.cnx.cursor(dictionary=True) # type: ignore
             cursor.execute(query)
             rows = cursor.fetchall()
-            for row in rows:
-                # S'assurer que le constructeur SavingAccount reçoit les bons arguments
+            for row in rows: # type: ignore
                 account=SavingAccount(interestRate=row['interest_rate'],balance=row['balance']) # type: ignore
                 account.account_id = row["id"]   # type: ignore # Utiliser les bons attributs
                 accounts.append(account)
@@ -85,11 +84,10 @@ class SavingAccountDao:
     def getSavingAccount(self, id: int) -> SavingAccount | None:
         query = "SELECT * FROM saving_accounts WHERE id = %s;"
         if self.cnx is not None:
-            cursor = self.cnx.cursor(dictionary=True)
+            cursor = self.cnx.cursor(dictionary=True) # type: ignore
             cursor.execute(query, (id,))
             row = cursor.fetchone()
             if row:
-                # Créer un objet SavingAccount avec les bons arguments
                 account = SavingAccount(interestRate=row['interest_rate'],balance=row['balance']) # type: ignore
                 account.account_id = row["id"] # type: ignore
                 return account
@@ -134,11 +132,10 @@ class CheckingAccountDao:
         accounts: list[CheckingAccount] = []
         query = "SELECT * FROM checking_accounts;"
         if self.cnx is not None:
-            cursor = self.cnx.cursor(dictionary=True)
+            cursor = self.cnx.cursor(dictionary=True) # type: ignore
             cursor.execute(query)
             rows = cursor.fetchall()
-            for row in rows:
-                # Créer un objet CheckingAccount avec les bons arguments
+            for row in rows: # type: ignore
                 account = CheckingAccount(balance=row['balance']) # type: ignore
                 account.account_id = row["id"] # type: ignore
                 accounts.append(account)
@@ -148,11 +145,10 @@ class CheckingAccountDao:
         query = "SELECT * FROM checking_accounts WHERE id = %s;"
         account = None
         if self.cnx is not None:
-            cursor = self.cnx.cursor(dictionary=True)
+            cursor = self.cnx.cursor(dictionary=True) # type: ignore
             cursor.execute(query, (account_id,))
             result = cursor.fetchone()
             if result:
-                # Créer un objet CheckingAccount avec les bons arguments
                 account = CheckingAccount(balance=result['balance']) # type: ignore
                 account.account_id = result["id"] # type: ignore
         return account
@@ -187,6 +183,43 @@ class TransactionDao:
             cursor = self.cnx.cursor()
             cursor.execute(query, (account_id, account_type, transaction_type, amount))
             self.cnx.commit()
+            
+    def log_saving_transaction(self, account_id: int):
+        query = """
+                SELECT * FROM transactions WHERE account_id = %s AND account_type = %s
+                """
+        transactionss = []        
+        if self.cnx is not None:
+            cursor = self.cnx.cursor(dictionary=True) # type: ignore
+            cursor.execute(query, (account_id, "Saving"))
+            
+            transactions = cursor.fetchall()
+            
+            for transaction in transactions: # type: ignore
+                transactionn = Transactions(id=transaction['id'], account_id=transaction['account_id'], account_type=transaction['account_type'], transaction_type=transaction['transaction_type'], amount=transaction['amount'], transaction_date=transaction['transaction_date'])
+                transactionss.append(transactionn)
+        return transactionss       
+                    
+    def log_checking_transaction(self, account_id: int):
+        query = """
+                SELECT * FROM transactions WHERE account_id = %s AND account_type = %s
+                """
+        transactionss = []        
+        if self.cnx is not None:
+            cursor = self.cnx.cursor(dictionary=True) # type: ignore
+            cursor.execute(query, (account_id, "Checking"))
+            
+            # Récupère toutes les transactions qui correspondent à la requête
+            transactions = cursor.fetchall()
+            
+            for transaction in transactions: # type: ignore
+                # Créer un objet CheckingAccount avec les bons arguments
+                transactionn = Transactions(id=transaction['id'], account_id=transaction['account_id'], account_type=transaction['account_type'], transaction_type=transaction['transaction_type'], amount=transaction['amount'], transaction_date=transaction['transaction_date'])
+                transactionss.append(transactionn)
+        return transactionss
+            
+
+                   
 if __name__ == "__main__":
     database:Database = Database()
     database.get_connection()

@@ -11,7 +11,7 @@ class BankAccount(ABC):
         self.account_id = None
     
     def deposit(self, amount: float) -> float:
-        self.balance += Decimal(str(amount))
+        self.balance += Decimal(str(amount)) # type: ignore
         return self.balance  # Retourner le nouveau solde après dépôt
     
     @abstractmethod
@@ -36,8 +36,8 @@ class SavingAccount(BankAccount):
             return None  
 
     def withdraw(self, amount: float) -> float:
-        if self.balance - Decimal(str(amount)) >= SavingAccount.SAVING_AMOUNT:
-            self.balance -= Decimal(str(amount))
+        if self.balance - Decimal(str(amount)) >= SavingAccount.SAVING_AMOUNT: # type: ignore
+            self.balance -= Decimal(str(amount)) # type: ignore
             return self.balance  # Retourner le solde restant après retrait
         available_amount = self.balance - SavingAccount.SAVING_AMOUNT
         self.balance = SavingAccount.SAVING_AMOUNT
@@ -45,7 +45,7 @@ class SavingAccount(BankAccount):
 
     def addPeriodicInterest(self) -> float:
         interest: float = self.balance * self.interestRate
-        self.balance += Decimal(str(interest))
+        self.balance += Decimal(str(interest)) # type: ignore
         return self.balance  # Retourner le solde après ajout des intérêts
 
 
@@ -69,8 +69,8 @@ class CheckingAccount(BankAccount):
         return self.balance  # Retourner le solde après transfert
     
     def withdraw(self, amount: float) -> float:
-        if self.balance + CheckingAccount.DRAFT_OVER - amount >= 0:
-            self.balance -= Decimal(str(amount))
+        if self.balance + CheckingAccount.DRAFT_OVER - Decimal(str(amount)) >= 0: # type: ignore
+            self.balance -= Decimal(str(amount)) # type: ignore
             return self.balance  # Retourner le solde restant après retrait
         available_amount = self.balance + CheckingAccount.DRAFT_OVER
         self.balance = -CheckingAccount.DRAFT_OVER
@@ -81,7 +81,7 @@ class CheckingAccount(BankAccount):
         fees: float = 0
         if self.transaction_count > CheckingAccount.FREE_TRANSACTIONS:
             fees = (self.transaction_count - CheckingAccount.FREE_TRANSACTIONS) * CheckingAccount.TRANSACTION_FEE
-            self.balance -= Decimal(str(fees))
+            self.balance -= Decimal(str(fees)) # type: ignore
             self.transaction_count = 0
         return self.balance  # Retourner le solde après déduction des frais
       
@@ -90,6 +90,15 @@ class User:
     username:str
     email:str
     password:str
-    isadmin:bool 
+    isadmin:bool
+    
+@dataclass
+class Transactions:
+    id:int
+    account_id:int
+    account_type:str
+    transaction_type:str
+    amount:float
+    transaction_date:str   
     
     
