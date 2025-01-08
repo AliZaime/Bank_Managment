@@ -208,6 +208,7 @@ class CheckingAccountService:
         new_balance = account.deposit(amount)
         
         self.dao.update_balance(account_id, new_balance)
+        self.dao.update_transaction_count(account_id, account.transaction_count)
         
         self.transaction_dao.create_transaction(
             account_id=account_id,
@@ -229,6 +230,7 @@ class CheckingAccountService:
         new_balance = account.withdraw(amount)
         
         self.dao.update_balance(account_id, new_balance)
+        self.dao.update_transaction_count(account_id, account.transaction_count)
         
         self.transaction_dao.create_transaction(
             account_id=account_id,
@@ -252,7 +254,9 @@ class CheckingAccountService:
         withdrawn_amount = account_from.transfer(account_to, amount)
         
         self.dao.update_balance(account_id_from, account_from.balance)
+        self.dao.update_transaction_count(account_id_from, account_from.transaction_count)
         self.dao.update_balance(account_id_to, account_to.balance)
+        self.dao.update_transaction_count(account_id_to, account_to.transaction_count)
         
         self.transaction_dao.create_transaction(
             account_id=account_id_from,

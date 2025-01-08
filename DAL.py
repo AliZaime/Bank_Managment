@@ -138,6 +138,7 @@ class CheckingAccountDao:
             for row in rows: # type: ignore
                 account = CheckingAccount(balance=row['balance']) # type: ignore
                 account.account_id = row["id"] # type: ignore
+                account.transaction_count = row["transaction_count"]
                 accounts.append(account)
         return accounts
 
@@ -151,6 +152,7 @@ class CheckingAccountDao:
             if result:
                 account = CheckingAccount(balance=result['balance']) # type: ignore
                 account.account_id = result["id"] # type: ignore
+                account.transaction_count = result["transaction_count"]
         return account
 
     def update_balance(self, account_id: int, new_balance: float) -> None:
@@ -159,6 +161,20 @@ class CheckingAccountDao:
             cursor = self.cnx.cursor()
             cursor.execute(query, (new_balance, account_id))
             self.cnx.commit()
+    
+    
+    def update_transaction_count(self, account_id: int, new_transaction_count: int) -> None:
+        query = "UPDATE checking_accounts SET transaction_count = %s WHERE id = %s;"
+        if self.cnx is not None:
+            cursor = self.cnx.cursor()
+            try:
+                cursor.execute(query, (new_transaction_count, account_id))
+                self.cnx.commit()  # Validation des modifications
+            except Exception as e:
+                print(f"Erreur lors de la mise à jour de transaction_count : {e}")
+                self.cnx.rollback()  # Annule les modifications en cas d'erreur
+    
+    
             
     def delete_checking_account(self, account_id: int) -> None:
         query = "DELETE FROM checking_accounts WHERE id = %s;"
