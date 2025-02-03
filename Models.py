@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-import datetime
 from typing import Final
 from dataclasses import dataclass
 from decimal import Decimal
@@ -46,7 +45,7 @@ class SavingAccount(BankAccount):
     def addPeriodicInterest(self) -> float:
         interest: float = self.balance * self.interestRate
         self.balance += Decimal(str(interest)) # type: ignore
-        return self.balance  # Retourner le solde après ajout des intérêts
+        return interest  # Retourner le solde après ajout des intérêts
 
 
 class CheckingAccount(BankAccount):
@@ -83,7 +82,7 @@ class CheckingAccount(BankAccount):
             fees = (self.transaction_count - CheckingAccount.FREE_TRANSACTIONS) * CheckingAccount.TRANSACTION_FEE
             self.balance -= Decimal(str(fees)) # type: ignore
             self.transaction_count = 0
-        return self.balance  # Retourner le solde après déduction des frais
+        return fees  
       
 @dataclass
 class User:

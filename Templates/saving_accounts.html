@@ -116,6 +116,9 @@
         .btn-delete {
             background-color: red;
         }
+        .btn-facture {
+            background-color: green;
+        }
 
         /* Modal styles */
         .modal {
@@ -215,6 +218,9 @@
                         <form action="/delete_saving_account/{{ account.account_id }}" method="POST" style="display:inline;">
                             <button class="btn btn-delete" type="submit">Supprimer</button>
                         </form>
+                        <a href="{{ url_for('download_invoice_saving', account_id = account.account_id) }}">
+                            <button class="btn btn-facture">Télécharger le receipt</button>
+                        </a>
                     </td>
                 </tr>
                 {% endfor %}

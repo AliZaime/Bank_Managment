@@ -5,7 +5,9 @@ from flask import (Flask,
                    abort,
                    session,
                    redirect,
-                   url_for
+                   url_for,
+                   send_file,
+                   after_this_request
                    )
 
 from Services import *
@@ -13,6 +15,9 @@ from Models import *
 from werkzeug.exceptions import HTTPException
 import secrets
 from decimal import Decimal
+from fpdf import FPDF
+import os
+from datetime import datetime
 
 #werkzeug : serveur web de FlaskS
 #Express  : serveur web de dot.js
@@ -44,6 +49,7 @@ def error(e:HTTPException):
         "error":str(e),
         "status":e.code
     }
+
 
 @app.route("/error")
 def check_error():
@@ -240,6 +246,143 @@ def transactions_checking_account():
         return redirect(url_for('get_all_checking_accounts'))
     
     return "Invalid transaction type", 400
+
+
+@app.route('/facture_saving/<int:account_id>', methods=['GET'])
+def download_invoice_saving(account_id):
+    transactions = saving_account_dao.log_account(account_id)
+    account = saving_account_dao.getSavingAccount(account_id)
+    
+    if not transactions:
+        return "Aucune transaction trouvée pour cet ID", 404
+
+    # Création du PDF
+    pdf = FPDF()
+    pdf.set_auto_page_break(auto=True, margin=15)
+    pdf.add_page()
+    
+    # Définition de la police
+    pdf.set_font('Arial', 'B', 16)
+
+    # Titre de la facture
+    pdf.cell(200, 10, f'Facture - Saving Account {account_id}', ln=True, align='C')
+    
+    # Ajout d'un saut de ligne
+    pdf.ln(10)
+    
+    # Infos du client et date actuelle
+    pdf.set_font('Arial', '', 12)
+    pdf.cell(100, 10, 'Client: John Doe', ln=True)
+    pdf.cell(100, 10, f'Date: {datetime.now().strftime("%d-%m-%Y")}', ln=True)
+    
+    pdf.ln(5)  # Saut de ligne
+    
+    # Tableau des transactions
+    pdf.set_font('Arial', 'B', 12)
+    pdf.cell(50, 10, 'Date', 1)
+    pdf.cell(50, 10, 'Type', 1)
+    pdf.cell(50, 10, 'Montant (USD)', 1)
+    pdf.ln()
+    
+    # Transactions
+    pdf.set_font('Arial', '', 12)
+    for transaction in transactions:
+        pdf.cell(50, 10, str(transaction.transaction_date), 1)
+        pdf.cell(50, 10, transaction.transaction_type, 1)
+        pdf.cell(50, 10, str(transaction.amount), 1)
+        pdf.ln()
+
+    # Affichage du total
+    pdf.set_font('Arial', 'B', 12)
+    pdf.cell(100, 10, 'Balance', 1)
+    pdf.cell(50, 10, str(account.balance), 1) # type: ignore
+    pdf.ln(10)
+    
+    # Nom du fichier PDF
+    file_path = f"invoice_saving_account_{account_id}.pdf"
+    
+    # Sauvegarde temporaire du fichier PDF
+    pdf.output(file_path)
+
+    # Supprimer le fichier après téléchargement
+    @after_this_request
+    def cleanup(response):
+        try:
+            os.remove(file_path)
+        except Exception as e:
+            print(f"Erreur lors de la suppression du fichier: {e}")
+        return response
+
+    # Envoyer le fichier au client
+    return send_file(file_path, as_attachment=True)
+
+@app.route('/facture_checking/<int:account_id>', methods=['GET'])
+def download_invoice_checking(account_id):
+    transactions = checking_account_dao.log_account(account_id)
+    account = checking_account_dao.getCheckingAccount(account_id)
+    
+    if not transactions:
+        return "Aucune transaction trouvée pour cet ID", 404
+
+    # Création du PDF
+    pdf = FPDF()
+    pdf.set_auto_page_break(auto=True, margin=15)
+    pdf.add_page()
+    
+    # Définition de la police
+    pdf.set_font('Arial', 'B', 16)
+
+    # Titre de la facture
+    pdf.cell(200, 10, f'Facture - Checking Account {account_id}', ln=True, align='C')
+    
+    # Ajout d'un saut de ligne
+    pdf.ln(10)
+    
+    # Infos du client et date actuelle
+    pdf.set_font('Arial', '', 12)
+    pdf.cell(100, 10, 'Client: John Doe', ln=True)
+    pdf.cell(100, 10, f'Date: {datetime.now().strftime("%d-%m-%Y")}', ln=True)
+    
+    pdf.ln(5)  # Saut de ligne
+    
+    # Tableau des transactions
+    pdf.set_font('Arial', 'B', 12)
+    pdf.cell(50, 10, 'Date', 1)
+    pdf.cell(50, 10, 'Type', 1)
+    pdf.cell(50, 10, 'Montant (USD)', 1)
+    pdf.ln()
+    
+    # Transactions
+    pdf.set_font('Arial', '', 12)
+    for transaction in transactions:
+        pdf.cell(50, 10, str(transaction.transaction_date), 1)
+        pdf.cell(50, 10, transaction.transaction_type, 1)
+        pdf.cell(50, 10, str(transaction.amount), 1)
+        pdf.ln()
+
+    # Affichage du total
+    pdf.set_font('Arial', 'B', 12)
+    pdf.cell(100, 10, 'Balance', 1)
+    pdf.cell(50, 10, str(account.balance), 1) # type: ignore
+    pdf.ln(10)
+    
+    # Nom du fichier PDF
+    file_path = f"invoice_checking_account_{account_id}.pdf"
+    
+    # Sauvegarde temporaire du fichier PDF
+    pdf.output(file_path)
+
+    # Supprimer le fichier après téléchargement
+    @after_this_request
+    def cleanup(response):
+        try:
+            os.remove(file_path)
+        except Exception as e:
+            print(f"Erreur lors de la suppression du fichier: {e}")
+        return response
+
+    # Envoyer le fichier au client
+    return send_file(file_path, as_attachment=True)
 
 
 @app.route("/")
