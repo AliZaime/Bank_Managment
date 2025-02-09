@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transactions - Compte Courant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            height: 100%;
+            background-color: #2c3e50;
+            color: white;
+            padding-top: 20px;
+            position: fixed;
+        }
+
+        .sidebar h1 {
+            display: block;
+            color: gray;
+            padding: 15px 25px;
+            text-decoration: none;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            padding: 15px 25px;
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        .sidebar a:hover {
+            background-color: #34495e;
+        }
+
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            width: calc(100% - 250px);
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .form-group input[type="number"] {
+            width: 200px;
+        }
+
+        button[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        .search-container {
+            margin-bottom: 20px;
+        }
+
+        .search-container input {
+            padding: 10px;
+            font-size: 16px;
+            width: 300px;
+            margin-right: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        .search-container button {
+            padding: 10px 12px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .search-container button:hover {
+            background-color: #2980b9;
+        }
+
+        #transfer_account {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h1>ESISA BANK</h1>
+        <a href="/utilisateur//Home">Home</a>
+        <a href="/utilisateur//accounts">Accounts</a>
+        <a href="/bankaccount/transactions/checking">Transactions</a>
+        <a href="/bankaccount/transactions-checking/historique">Transactions Log</a>
+        <a href="/utilisateur//logout">Log Out</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <h2>Transactions - Compte Courant</h2>
+
+        <!-- Transaction Form -->
+        <form action="/bankaccount/transactions_checking_account" method="POST">
+            <div class="form-group">
+                <label for="account_id">ID du compte:</label>
+                <input type="text" id="account_id" name="account_id" required placeholder="Entrez l'ID du compte">
+            </div>
+
+            <div class="form-group">
+                <label for="transaction_type">Type de Transaction:</label>
+                <select id="transaction_type" name="transaction_type" required>
+                    <option value="withdraw">Retrait</option>
+                    <option value="transfer">Transfert</option>
+                    <option value="deposit">Dépôt</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="amount_container">
+                <label for="amount">Montant:</label>
+                <input type="number" id="amount" name="amount" required>
+            </div>
+
+            <div id="transfer_account" class="form-group">
+                <label for="recipient_account">ID du compte destinataire (pour transfert):</label>
+                <input type="text" id="recipient_account" name="recipient_account">
+            </div>
+
+            <button type="submit">Effectuer la transaction</button>
+        </form>
+    </div>
+
+    <script>
+        // Afficher ou masquer les champs spécifiques au type de transaction
+        document.getElementById('transaction_type').addEventListener('change', function() {
+            var transactionType = this.value;
+            var transferAccountField = document.getElementById('transfer_account');
+            var amountContainer = document.getElementById('amount_container');
+            var amountField = document.getElementById('amount');
+
+
+            if (transactionType === 'transfer') {
+                transferAccountField.style.display = 'block';
+            } else {
+                transferAccountField.style.display = 'none';
+            }
+
+            // Show or hide the amount field based on the transaction type
+            if (transactionType === 'deduct_fee') {
+                amountContainer.style.display = 'none'; // Hide amount field for 'add_interest'
+                amountField.removeAttribute('required'); // Make amount field optional
+            } else {
+                amountContainer.style.display = 'block'; // Show amount field for other transactions
+                amountField.setAttribute('required', 'required'); // Make amount field required
+            }
+        });
+    </script>
+
+</body>
+</html>

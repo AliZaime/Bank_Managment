@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comptes Épargne</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            height: 100%;
+            background-color: #2c3e50;
+            color: white;
+            padding-top: 20px;
+            position: fixed;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            padding: 15px 25px;
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        .sidebar a:hover {
+            background-color: #34495e;
+        }
+
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            width: 100%;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom : 20px
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 8px 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+        .sidebar h1 {
+            display: block;
+            color: gray;
+            padding: 15px 25px;
+            text-decoration: none;
+        }
+        
+        .search-container {
+            margin-bottom: 20px;
+        }
+
+        .search-container input[type="text"] {
+            padding: 8px;
+            width: 300px;
+            margin-right: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .search-container button {
+            padding: 8px 12px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .search-container button:hover {
+            background-color: #2980b9;
+        }
+
+        .btn {
+            padding: 5px 10px;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+        .btn-create {
+            background-color: green;
+            margin: 10px 0;
+            margin-bottom:20px
+        }
+        .btn-edit {
+            background-color: blue;
+        }
+        .btn-delete {
+            background-color: red;
+        }
+        .btn-facture {
+            background-color: green;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 30%;
+            border-radius: 5px;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom:20px
+        }
+        .modal-header h2 {
+            margin: 0;
+        }
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h1>ESISA BANK<h1>
+        <a href="/utilisateur/Home">Home</a>
+        <a href="/utilisateur/accounts">Accounts</a>
+        <a href="/bankaccount/transactions/checking">Transactions</a>
+        <a href="/utilisateur/logout">Log Out</a>
+    </div>
+
+    <!-- Main content -->
+    <div class="content">
+        <h2>Comptes Courant</h2>
+
+        <div class="search-container">
+            <form method="GET" action="/bankaccount/get_checking_account">
+                <input type="text" name="account_id" placeholder="Rechercher par ID du compte..." required>
+                <button type="submit">Rechercher</button>
+            </form>
+        </div>
+
+        <button class="btn btn-create" onclick="showModal()">Créer un Compte</button>
+
+
+        {% if checking_accounts %}
+        <table>
+            <thead>
+                <tr>
+                    <th>ID du Compte</th>
+                    <th>Solde</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for account in checking_accounts %}
+                <tr>
+                    <td>{{ account.account_id }}</td>
+                    <td>{{ account.balance }}</td>
+                    <td>
+                        <!-- Boutons Modifier et Supprimer -->
+                        <button class="btn btn-edit" onclick="showEditModal({{ account.account_id }}, '{{ account.balance }}')">Modifier</button>
+                        <form action="/bankaccount/delete_checking_account/{{ account.account_id }}" method="POST" style="display:inline;">
+                            <button class="btn btn-delete" type="submit">Supprimer</button>
+                        </form>
+                        <a href="{{ url_for('bankaccount.download_invoice_checking', account_id = account.account_id) }}">
+                            <button class="btn btn-facture">Télécharger le receipt</button>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>Aucun compte Courant trouvé.</p>
+        {% endif %}
+    </div>
+
+    <!-- Modal pour le formulaire -->
+    <div id="createAccountModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Créer un Compte Épargne</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <form action="/bankaccount/create_checking_account" method="POST">
+                <div class="form-group">
+                    <label for="balance">Solde :</label>
+                    <input type="number" id="balance" name="balance" required>
+                </div>
+                <div class="form-group">
+                    <label for="userID">user ID :</label>
+                    <input type="number" step="1" id="userID" name="userID" required>
+                </div>
+                <button type="submit" class="btn btn-create">Créer</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function showModal() {
+            document.getElementById('createAccountModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('createAccountModal').style.display = 'none';
+        }
+
+        // Fermer le modal en cliquant en dehors
+        window.onclick = function(event) {
+            const modal = document.getElementById('createAccountModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+
+        <!-- Modal pour modifier un compte -->
+    <div id="editAccountModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Modifier un Compte</h2>
+                <span class="close" onclick="closeEditModal()">&times;</span>
+            </div>
+            <form id="editAccountForm" action="/bankaccount/edit_checking_account" method="POST">
+                <input type="hidden" id="account_id" name="account_id">
+                <div class="form-group">
+                    <label for="new_balance">Nouveau Solde :</label>
+                    <input type="number" id="new_balance" name="balance" required>
+                </div>
+                <button type="submit" class="btn btn-create">Modifier</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function showEditModal(accountId, balance) {
+            // Remplir les champs du formulaire avec les valeurs existantes
+            document.getElementById('account_id').value = accountId;
+            document.getElementById('new_balance').value = balance;
+            document.getElementById('editAccountModal').style.display = 'block';
+        }
+
+        function closeEditModal() {
+            document.getElementById('editAccountModal').style.display = 'none';
+        }
+
+        // Fermer le modal en cliquant en dehors
+        window.onclick = function(event) {
+            const modal = document.getElementById('editAccountModal');
+            if (event.target === modal) {
+                closeEditModal();
+            }
+        }
+    </script>
+
+
+</body>
+</html>
