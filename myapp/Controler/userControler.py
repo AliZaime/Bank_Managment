@@ -5,6 +5,7 @@ from flask import (Blueprint,
                    session,
                    redirect,
                    url_for,
+                   current_app as app
                    )
 
 from myapp.Services.userServices import UserManage
@@ -28,10 +29,13 @@ def users():
 def auth():
     login = request.form.get("login")
     password = request.form.get("password")
+    app.logger.info(f"Tentative de connection du user dont l'email est {login}")
     user:User|None =  userService.auth(login, password) # type: ignore
     if user == None:
+        app.logger.error("Erreur lors de la connection du user dont l'email est {login} ")
         return render_template("authentication.html",error="Login or password incorrect")
     session["email"]=login
+    app.logger.info(f"Connection effectuer avec succes !!")
     if user.isadmin == 0:
         return render_template('accounts.html')
     listUsers = userService.listUsers()
@@ -42,9 +46,13 @@ def registerPost():
     username = request.form.get("username")
     email = request.form.get("email")
     password = request.form.get("password")
+    app.logger.info(f"Tentative de registration")
     ispass = userService.register(email,username,password)#type: ignore
     if  ispass == False:
+        app.logger.error("Erreur lors de la registration du user")
         return render_template("register.html",error="erreur")
+    
+    app.logger.info(f"Registration effectuer avec succes !!")
     return render_template("authentication.html")
         
 

@@ -1,0 +1,7 @@
+2025-02-09 17:11:21,423 - WARNING - Page non trouver : http://127.0.0.1:5000/Static/authentication.css
+2025-02-09 17:11:28,362 - INFO - Tentative de connection du user dont l'email est admin@esisa.ma
+2025-02-09 17:11:28,781 - INFO - Connection effectuer avec succes !!
+2025-02-09 17:11:32,930 - INFO - R�cup�ration des d�tails des comptes d'epargnes
+2025-02-09 17:12:59,072 - INFO - Tentative de cr�ation d'un compte �pargne pour user 3
+2025-02-09 17:12:59,083 - INFO - Compte �pargne cr�� avec succ�s pour user 3
+2025-02-09 17:12:59,090 - INFO - R�cup�ration des d�tails des comptes d'epargnes

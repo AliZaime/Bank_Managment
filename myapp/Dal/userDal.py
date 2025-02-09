@@ -12,18 +12,18 @@ class UserDao:
         users:list[User]=[]
         query = "SELECT * FROM users;"
         if self.cnx != None :
-            cursor=self.cnx.cursor(dictionary=True) 
+            cursor=self.cnx.cursor(dictionary=True)  # type: ignore
             cursor.execute(query)
             rows=cursor.fetchall()
             for row in rows : # type: ignore
                 users.append(User(username=row['username'],email=row['email'],password=row['password'],isadmin=row['isadmin'])) # type: ignore
-        return rows
+        return rows # type: ignore
     
     def auth(self, login: str, password: str) -> User | None:
         query = "SELECT * FROM users WHERE email = %s;"
         
         if self.cnx is not None:
-            cursor = self.cnx.cursor(dictionary=True)
+            cursor = self.cnx.cursor(dictionary=True) # type: ignore
             cursor.execute(query, (login,))
             row = cursor.fetchone()
 
@@ -48,7 +48,7 @@ class UserDao:
 
         if self.cnx is not None:
                 # Vérifier si l'email existe déjà
-                cursor = self.cnx.cursor(dictionary=True)
+                cursor = self.cnx.cursor(dictionary=True) # type: ignore
                 cursor.execute("SELECT id FROM users WHERE email = %s;", (email,))
                 existing_user = cursor.fetchone()
                 if existing_user:
