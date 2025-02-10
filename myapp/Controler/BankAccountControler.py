@@ -395,3 +395,18 @@ def transactions_saving_historique():
 def transactions_checking_historique():
     return render_template("transactions_checking_log.html")
 
+@bankaccount.route("/accountByUserSaving")
+def accountByUserSaving():
+    id = session['accountId']
+    accounts = saving_account_dao.getaccountbyuser(id)
+    return render_template('saving_useraccounts.html',saving_accounts=accounts)
+
+@bankaccount.route("/accountByUserCheking")
+def accountByUserCheking():
+    id = session['accountId']
+    accounts = checking_account_dao.getaccountbyuser(id)
+    return render_template('checking_useraccounts.html',saving_accounts=accounts)
+
+@bankaccount.route("/accountusertemp")
+def accountusertemp():
+    return render_template('accounts_user')

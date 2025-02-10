@@ -68,6 +68,23 @@ class SavingAccountDao:
             cursor.execute(query, (account_id,))
             self.cnx.commit()
 
+    def getaccountbyuser(self,userid:int) -> list[SavingAccount] | None:
+        lst_accounts = []
+        query = "SELECT * FROM saving_accounts WHERE userid = %s;"
+        if self.cnx is not None:
+            cursor = self.cnx.cursor(dictionary=True) # type: ignore
+            cursor.execute(query, (userid,))
+            row = cursor.fetchone()
+            if row:
+                account = SavingAccount(interestRate=row['interest_rate'],balance=row['balance']) # type: ignore
+                account.account_id = row["id"] # type: ignore
+                lst_accounts.append(account)
+            return lst_accounts
+        return None
+    
+    
+    
+    
 class CheckingAccountDao:
     def __init__(self) -> None:
         self.cnx = Database.get_connection()
@@ -138,6 +155,24 @@ class CheckingAccountDao:
             cursor = self.cnx.cursor()
             cursor.execute(query, (account_id,))
             self.cnx.commit()
+            
+    def getaccountbyuser(self,userid:int) -> list[CheckingAccount] | None:
+        lst_accounts = []
+        query = "SELECT * FROM saving_accounts WHERE userid = %s;"
+        if self.cnx is not None:
+            cursor = self.cnx.cursor(dictionary=True) # type: ignore
+            cursor.execute(query, (userid,))
+            rows = cursor.fetchall()
+            for row in rows: # type: ignore
+                account = CheckingAccount(balance=row['balance']) # type: ignore
+                account.account_id = row["id"] # type: ignore
+                account.transaction_count = row["transaction_count"]# type: ignore
+                lst_accounts.append(account)
+                
+            return lst_accounts
+        return None        
+            
+            
             
             
 

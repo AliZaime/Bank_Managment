@@ -5,3 +5,49 @@
 2025-02-09 17:12:59,072 - INFO - Tentative de crï¿½ation d'un compte ï¿½pargne pour user 3
 2025-02-09 17:12:59,083 - INFO - Compte ï¿½pargne crï¿½ï¿½ avec succï¿½s pour user 3
 2025-02-09 17:12:59,090 - INFO - Rï¿½cupï¿½ration des dï¿½tails des comptes d'epargnes
+2025-02-10 10:39:41,258 - WARNING - Page non trouver : http://127.0.0.1:5000/Static/authentication.css
+2025-02-10 10:39:41,333 - WARNING - Page non trouver : http://127.0.0.1:5000/favicon.ico
+2025-02-10 10:39:50,371 - INFO - Tentative de connection du user dont l'email est admin@esisa.ma
+2025-02-10 10:41:19,530 - INFO - Tentative de connection du user dont l'email est admin@esisa.ma
+2025-02-10 10:43:02,728 - INFO - Tentative de connection du user dont l'email est admin@esisa.ma
+2025-02-10 10:43:03,055 - INFO - Connection effectuer avec succes !!
+2025-02-10 10:43:42,710 - WARNING - Page non trouver : http://127.0.0.1:5000/Static/authentication.css
+2025-02-10 10:43:47,779 - INFO - Tentative de connection du user dont l'email est admin@esisa.ma
+2025-02-10 10:43:48,031 - INFO - Connection effectuer avec succes !!
+2025-02-10 10:45:00,030 - INFO - Tentative de connection du user dont l'email est admin@esisa.ma
+2025-02-10 10:45:00,341 - INFO - Connection effectuer avec succes !!
+2025-02-10 10:45:04,997 - WARNING - Page non trouver : http://127.0.0.1:5000/Static/authentication.css
+2025-02-10 10:45:33,746 - INFO - Tentative de connection du user dont l'email est alizaime2003@gmail.com
+2025-02-10 10:45:33,998 - INFO - Connection effectuer avec succes !!
+2025-02-10 10:45:40,380 - WARNING - Page non trouver : http://127.0.0.1:5000/bankaccount/
+2025-02-10 10:45:47,546 - INFO - Tentative de connection du user dont l'email est alizaime2003@gmail.com
+2025-02-10 10:45:47,792 - INFO - Connection effectuer avec succes !!
+2025-02-10 10:46:28,459 - INFO - Tentative de connection du user dont l'email est hmizourais557@gmail.com
+2025-02-10 10:46:28,774 - INFO - Connection effectuer avec succes !!
+2025-02-10 10:46:30,370 - WARNING - Page non trouver : http://127.0.0.1:5000/bankaccount/
+2025-02-10 10:47:30,676 - INFO - Tentative de connection du user dont l'email est hmizourais557@gmail.com
+2025-02-10 10:47:30,912 - INFO - Connection effectuer avec succes !!
+2025-02-10 10:47:51,920 - WARNING - Page non trouver : http://127.0.0.1:5000/bankaccount/transactions/historique
+2025-02-10 10:47:59,023 - INFO - Récupération des détails des comptes courants
+2025-02-10 10:48:12,011 - WARNING - Page non trouver : http://127.0.0.1:5000/Static/authentication.css
+2025-02-10 10:48:19,696 - INFO - Tentative de connection du user dont l'email est alizaime2003@gmail.com
+2025-02-10 10:48:19,968 - INFO - Connection effectuer avec succes !!
+2025-02-10 10:48:47,759 - INFO - Tentative de connection du user dont l'email est alizaime2003@gmail.com
+2025-02-10 10:48:51,654 - INFO - Tentative de connection du user dont l'email est alizaime2003@gmail.com
+2025-02-10 10:49:07,382 - INFO - Tentative de connection du user dont l'email est alizaime2003@gmail.com
+2025-02-10 10:49:34,042 - WARNING - Page non trouver : http://127.0.0.1:5000/Static/authentication.css
+2025-02-10 10:49:34,116 - WARNING - Page non trouver : http://127.0.0.1:5000/favicon.ico
+2025-02-10 10:49:46,198 - INFO - Tentative de connection du user dont l'email est alizaime2003@gmail.com
+2025-02-10 10:49:50,272 - INFO - Connection effectuer avec succes !!
+2025-02-10 10:50:00,922 - INFO - Récupération des détails des comptes d'epargnes
+2025-02-10 10:50:17,649 - INFO - Récupération des détails des comptes courants
+2025-02-10 10:50:23,709 - INFO - Récupération des détails des comptes d'epargnes
+2025-02-10 10:50:27,173 - WARNING - Page non trouver : http://127.0.0.1:5000/Static/authentication.css
+2025-02-10 10:53:36,103 - WARNING - Page non trouver : http://127.0.0.1:5000/Static/authentication.css
+2025-02-10 10:53:36,173 - WARNING - Page non trouver : http://127.0.0.1:5000/favicon.ico
+2025-02-10 10:53:50,182 - INFO - Tentative de connection du user dont l'email est hmizourais557@gmail.com
+2025-02-10 10:53:50,940 - INFO - Connection effectuer avec succes !!
+2025-02-10 10:59:02,877 - INFO - Tentative de connection du user dont l'email est hmizourais557@gmail.com
+2025-02-10 10:59:03,247 - INFO - Connection effectuer avec succes !!
+2025-02-10 10:59:12,473 - INFO - Récupération des détails des comptes d'epargnes
+2025-02-10 10:59:30,316 - INFO - Récupération des détails des comptes courants

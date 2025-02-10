@@ -52,7 +52,15 @@ class SavingAccountService:
         self.dao.update_account(account_id, new_balance, new_interestRate) 
         
     def delete_account(self, account_id: int) -> None:
-        self.dao.delete_saving_account(account_id)     
+        self.dao.delete_saving_account(account_id) 
+        
+    def getaccountbyuser(self,userID:int):
+        try:
+            accounts = self.dao.getaccountbyuser(userID)
+            return accounts
+        except Exception as e:
+            print(f"Error fetching checking accounts: {e}")
+            return []        
 
     def deposit(self, account_id: int, amount: float) -> float:
         if amount <= 0:
@@ -200,7 +208,16 @@ class CheckingAccountService:
         self.dao.update_balance(account_id, new_balance) 
         
     def delete_account(self, account_id: int) -> None:
-        self.dao.delete_checking_account(account_id)          
+        self.dao.delete_checking_account(account_id)    
+        
+        
+    def getaccountbyuser(self,userID:int):
+        try:
+            accounts = self.dao.getaccountbyuser(userID)
+            return accounts
+        except Exception as e:
+            print(f"Error fetching checking accounts: {e}")
+            return []            
 
     def deposit(self, account_id: int, amount: float) -> float:
         if amount <= 0:

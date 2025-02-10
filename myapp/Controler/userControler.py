@@ -37,7 +37,8 @@ def auth():
     session["email"]=login
     app.logger.info(f"Connection effectuer avec succes !!")
     if user.isadmin == 0:
-        return render_template('accounts.html')
+        session["accountId"]=user.id
+        return render_template('accounts_user.html')
     listUsers = userService.listUsers()
     return render_template('Home.html',users=listUsers)
 

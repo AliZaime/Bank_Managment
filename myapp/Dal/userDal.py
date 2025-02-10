@@ -16,7 +16,7 @@ class UserDao:
             cursor.execute(query)
             rows=cursor.fetchall()
             for row in rows : # type: ignore
-                users.append(User(username=row['username'],email=row['email'],password=row['password'],isadmin=row['isadmin'])) # type: ignore
+                users.append(User(id=row['id'],username=row['username'],email=row['email'],password=row['password'],isadmin=row['isadmin'])) # type: ignore
         return rows # type: ignore
     
     def auth(self, login: str, password: str) -> User | None:
@@ -34,6 +34,7 @@ class UserDao:
                 # Vérifier si le mot de passe entré correspond au hash
                 if bcrypt.checkpw(password.encode('utf-8'), hashed_password):
                     return User(
+                        id = row['id'],
                         username=row['username'],#type: ignore
                         email=row['email'],#type: ignore
                         password=row['password'],#type: ignore
